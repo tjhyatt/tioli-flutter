@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:timeago/timeago.dart' as timeago;
+import 'package:intl/intl.dart';
 import './VoteBar.dart';
 
 class Tioli {
@@ -64,7 +66,6 @@ class TioliViewState extends State<TioliView> {
           initialData: new Tioli("1", "2", "3", "4", 0, 0, 0),
           builder: (BuildContext context, AsyncSnapshot<Tioli> tioli) {
             if (tioli.hasData) {
-              print(tioli.data.takes);
               return Container(
                 child: Column(
                   children: <Widget>[
@@ -74,72 +75,43 @@ class TioliViewState extends State<TioliView> {
                       style: TextStyle(fontSize: 22),
                     ),
                     Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                      ),
+
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(0, 20, 0, 30),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            CircleAvatar(
+                              backgroundColor: Colors.blueAccent
+                            ),
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 8),
+                              child: Text(tioli.data.username)
+                              
+                            ),
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 8),
+                              child: Text(_getDateFromTimestamp(-tioli.data.timestamp))
+                            )
+                          ],
+                        ),
+                      )
+                    ),
+                    Container(
                       child: VoteBar(tioli.data.takes, tioli.data.leaves),
                     )
-                    // VoteBar()
-                    // Row(
-                    //   children: <Widget>[
-                    //     SizedBox(
-                    //       width: MediaQuery.of(context).size.width,
-                    //       child: Container(
-                    //         decoration: BoxDecoration(
-                    //           borderRadius: BorderRadius.all(new Radius.circular(4.0))
-                    //         ),
-                    //         child: Container(
-
-                    //         )
-                    //       ),
-                    //       child: Row(
-                    //         children: <Widget>[
-                    //           SizedBox(
-                    //             width: MediaQuery.of(context).size.width * .5 - 24,
-                    //             child: Container(
-                    //               decoration: BoxDecoration(
-                    //                 color: Color.fromRGBO(30, 169, 53, 1),
-                    //                 border: Border.all(
-                    //                   color: Color.fromRGBO(30, 169, 53, 1),
-                    //                   width: 8.0,
-                    //                 ),
-                    //                 borderRadius: BorderRadius.all(new Radius.circular(4.0))
-                    //               ),
-                    //               child: Text("hh"),
-                    //             ),
-                    //           ),
-
-                    //           SizedBox(
-                    //             width: MediaQuery.of(context).size.width * .5 - 24,
-                    //             child: Container(
-                    //               decoration: BoxDecoration(
-                    //                 color: Color.fromRGBO(245, 47, 47, 1),
-                    //                 border: Border.all(
-                    //                   color: Color.fromRGBO(245, 47, 47, 1),
-                    //                   width: 8.0,
-                    //                 ),
-                    //               ),
-                    //               child: Text("hh"),
-                    //             ),
-                    //           ),
-                    //         ],
-                    //       )
-                    //     )
-                        
-                        
-                    //   ],
-                    // )
                   ],
                 ),
               );
-              
-              
-              
             }
-            
           },
         )
       )
     );
+  }
+
+  String _getDateFromTimestamp(int timestamp) {
+    final fifteenAgo = DateTime.fromMillisecondsSinceEpoch(timestamp);
+    return timeago.format(fifteenAgo);
   }
 }
